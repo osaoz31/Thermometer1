@@ -25,6 +25,7 @@
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
 #include "stdio_redirect_to_usart.h"
+#include "max6675.h"
 
 /* USER CODE END Includes */
 
@@ -75,7 +76,7 @@ static void MX_SPI1_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-	int i = 0;
+	//int i = 0;
   /* USER CODE END 1 */
   
 
@@ -101,6 +102,7 @@ int main(void)
   MX_USART1_UART_Init();
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
+  init_max6675(&hspi1);
   init_stdio_redirect_to_usart(&huart1);
   printf("\r\n Thermometer is run! Lets go! \r\n");
   /* USER CODE END 2 */
@@ -109,18 +111,11 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  if (i > 16) 	i = 0;
-	  else 			i++;
+	  printf("T = %u mC; \r\n", get_temperature_max6675());
 
-	  HAL_GPIO_WritePin(Led_GPIO_Port, Led_Pin, 0);
-	  HAL_Delay(i * 100);
-	  HAL_GPIO_WritePin(Led_GPIO_Port, Led_Pin, 1);
-	  HAL_Delay(i * 100);
+	  HAL_GPIO_TogglePin(Led_GPIO_Port, Led_Pin);
 
-	  //USART
-	  printf("i = %d; \r\n", i);
-
-	//	HAL_GPIO_TogglePin(Led_GPIO_Port, Led_Pin);
+	  HAL_Delay(1000);
 
     /* USER CODE END WHILE */
 

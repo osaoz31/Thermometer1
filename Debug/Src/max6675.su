@@ -1,1 +1,3 @@
-max6675.c:13:13:read_max6675	16	static
+max6675.c:14:6:init_max6675	16	static
+max6675.c:19:13:read_max6675	32	dynamic
+max6675.c:58:13:get_temperature_max6675	16	static

@@ -4,28 +4,42 @@
  *  Created on: Nov 1, 2019
  *      Author: prog1
  */
+#include <stdio.h>
 
 #include "main.h"
 #include "max6675.h"
 
-uint8_t i = 0;
+SPI_HandleTypeDef * hspi;
 
-uint32_t    read_max6675(void)
+void init_max6675(SPI_HandleTypeDef * hspix)
 {
-	//uint8_t q = 0, q_byte = 2;
-	//uint8_t buffer[2];
-	uint32_t value = 0;
+	hspi = hspix;
+}
 
-	//if ((DebugUsart)&&(DebugMax))
+uint16_t    read_max6675(void)
+{
+	uint8_t q = 0, q_byte = 2;
+	uint8_t buffer[q_byte];
+	uint16_t value = 0;
+
+	//if (DebugMax)
 	//printf("Read max6675 \r\n");
+
+	SET_PIN_CS(0);//HAL_GPIO_WritePin(SPI1_SS_GPIO_Port, SPI1_SS_Pin, 0);
+	TC_DELAY(1);
+
+	HAL_SPI_Receive(hspi, &buffer[0], 2, 1000);
+
 	/*
-	HAL_GPIO_WritePin(SPI1_SS_GPIO_Port, SPI1_SS_Pin, 0);
-	HAL_Delay(1);
-
-	while (q != q_byte) q = io_read(spi1_io, &buffer[0], q_byte); //if ((DebugUsart)&&(DebugMax)) printf(".");
-	//printf("2\r\n");
-
-	q = 0;
+	while (q < q_byte)
+	{
+		HAL_SPI_Receive(hspi, &buffer[0], 1, 10000);
+		//printf(" b0 = %u;", buffer[0]);
+		HAL_SPI_Receive(hspi, &buffer[1], 1, 10000);
+		//printf(" b1 = %u;", buffer[1]);
+		q++;
+	}	q = 0;
+	*/
 
 	while (q < q_byte)
 	{
@@ -33,12 +47,33 @@ uint32_t    read_max6675(void)
 		value |= buffer[q];
 		//printf(" buffer[x] = %#x;\r\n", buffer[q]);
 		q++;
-	}
+	}	q = 0;
 	//printf(" value = %#lx;", value);
 
-	gpio_set_pin_level(TEMP_SS, 1);
-*/
+	SET_PIN_CS(1);//HAL_GPIO_WritePin(SPI1_SS_GPIO_Port, SPI1_SS_Pin, 1);
+
 	return value;
+}
+
+uint16_t    get_temperature_max6675(void)
+{
+	uint16_t  v = 0;
+
+	//if (DebugMax) printf("\r\nRead Temperature Celcius");
+
+	v = read_max6675();
+
+	if (v & 0x4)
+	{
+		v = 0;
+		if (DebugMax) printf("\r\n Error max6675! \r\n");
+	}
+	else
+	{
+		v = (v*250) >> 3; //v *= 250;v >>= 3;
+	}
+
+	return v;
 }
 /*
 uint8_t    get_temperature_celcius(TemperatureStruct * uT)

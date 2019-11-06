@@ -22,7 +22,7 @@ Src/max6675.o: ../Src/max6675.c ../Inc/main.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_spi.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h \
- ../Inc/max6675.h
+ ../Inc/max6675.h ../Inc/main.h
 
 ../Inc/main.h:
 
@@ -73,3 +73,5 @@ Src/max6675.o: ../Src/max6675.c ../Inc/main.h \
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h:
 
 ../Inc/max6675.h:
+
+../Inc/main.h:
